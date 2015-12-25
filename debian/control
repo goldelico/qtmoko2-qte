@@ -1,7 +1,10 @@
 Source: qt-embedded
 Priority: optional
 Maintainer: unknown <privacy@not.given>
-Build-Depends: debhelper (>= 9)
+Build-Depends:
+ debhelper (>= 9),
+ libz-dev,
+ libsqlite3-dev,
 Standards-Version: 3.9.5
 Section: libs
 Homepage: <insert the upstream URL, if relevant>
