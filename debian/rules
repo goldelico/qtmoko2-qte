@@ -39,7 +39,11 @@ override_dh_auto_configure:
 		-confirm-license \
 		-embedded \
 		-prefix /opt/qt-embedded \
-		-no-rpath
+		-no-rpath \
+		-plugin-sql-sqlite \
+		-svg \
+		-system-zlib \
+		-system-sqlite
 
 override_dh_auto_test:
 	# for some reason, tests dont work because "QWSServerSocket::init: Address already in use"
