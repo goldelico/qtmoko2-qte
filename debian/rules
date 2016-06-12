@@ -7,37 +7,37 @@
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
-# see FEATURE AREAS in dpkg-buildflags(1)
-#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-
-# see ENVIRONMENT in dpkg-buildflags(1)
-# package maintainers to append CFLAGS
-#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
-# package maintainers to append LDFLAGS
-#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+# import system information
+include /usr/share/dpkg/architecture.mk
 
 # add work-around for finding libQtCLucene.so.4
 export DEB_LDFLAGS_MAINT_APPEND = -Wl,-rpath-link,$(CURDIR)/build/lib
+
+# generate Qt platform definition for debian
+# (to allow cross-compiling with debians gcc names)
+genplatformdef_target:
+	./mkqtspec.sh
+genplatformdef_target_clean:
+	rm -rf source/mkspecs/linux-debian-* source/mkspecs/qws/linux-debian-*
 
 # main packaging script based on dh7 syntax
 %:
 	dh $@ --sourcedirectory=source --builddirectory=build --parallel
 
-# debmake generated override targets
-# This is example for Cmake (See http://bugs.debian.org/641051 )
-#override_dh_auto_configure:
-#	dh_auto_configure -- \
-#	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
+override_dh_auto_clean: genplatformdef_target_clean
+	rm -rf build
+	dh_auto_clean
 
-
-
-
-override_dh_auto_configure:
+override_dh_auto_configure: genplatformdef_target
 	mkdir -p build
-	cd build; ../source/configure \
+	cd build; env \
+		../source/configure \
 		-opensource \
 		-confirm-license \
 		-embedded \
+		-platform linux-debian-$(DEB_TARGET_ARCH) \
+		-xplatform qws/linux-debian-$(DEB_TARGET_ARCH) \
+		-force-pkg-config \
 		-prefix /opt/qt-embedded \
 		-no-rpath \
 		-plugin-sql-sqlite \
@@ -52,3 +52,6 @@ override_dh_auto_test:
 override_dh_shlibdeps:
 	# make sure dpkg-shlibdeps can find the qt libraries when its looking
 	dh_shlibdeps -l/opt/qt-embedded/lib
+
+override_dh_strip:
+	# dont strip until we figure out how to install qt-tools (qmake, moc, lrelease) built for the target system
