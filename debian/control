@@ -3,6 +3,7 @@ Priority: optional
 Maintainer: unknown <privacy@not.given>
 Build-Depends:
  debhelper (>= 9),
+ pkg-config,
  libz-dev,
  libsqlite3-dev,
 Standards-Version: 3.9.5
