@@ -46,6 +46,7 @@
 #include "qcolor.h"
 
 #define MNG_USE_SO
+#include <stdio.h>
 #include <libmng.h>
 
 QT_BEGIN_NAMESPACE
