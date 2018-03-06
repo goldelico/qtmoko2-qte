@@ -18,6 +18,14 @@ export DEB_LDFLAGS_MAINT_APPEND = -Wl,-rpath-link,$(CURDIR)/build/lib
 genplatformdef_target:
 	./mkqtspec.sh
 genplatformdef_target_clean:
+	# rsync src into subdirectory
+	# unfortunately this makes the .tar.xz include both, src/ and source/
+	if [ -d src ]; \
+	then \
+		mkdir -p source; \
+		echo "rsync . source"; \
+		rsync -a --delete --exclude=mkqtspec.sh --exclude=README.md --exclude build/ --exclude debian/ '--exclude=.git*' --exclude=source/ . source/; \
+	fi
 	rm -rf source/mkspecs/linux-debian-* source/mkspecs/qws/linux-debian-*
 
 # main packaging script based on dh7 syntax
