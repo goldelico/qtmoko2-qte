@@ -6,9 +6,12 @@ Build-Depends:
  pkg-config,
  libz-dev,
  libsqlite3-dev,
+ libglib2.0-dev,
+ libgstreamer0.10-dev,
+ libgstreamer-plugins-base0.10-dev,
 Standards-Version: 3.9.5
 Section: libs
-Homepage: <insert the upstream URL, if relevant>
+Homepage: http://projects.goldelico.com/p/qtmoko2-qte/
 #Vcs-Git: git://anonscm.debian.org/collab-maint/qt-embedded.git
 #Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/qt-embedded.git;a=summary
 
@@ -16,11 +19,9 @@ Package: qt-embedded-dev
 Section: libdevel
 Architecture: any
 Depends: qt-embedded (= ${binary:Version}), ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: This is the developer version of QTE for Letux QtMoko
 
 Package: qt-embedded
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: This is QTE for Letux QtMoko
