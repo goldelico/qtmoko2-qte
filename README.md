@@ -4,18 +4,16 @@
 1.  Install Cross-Compiler for armhf from emdebian:
     [https://wiki.debian.org/CrossToolchains#Installation](https://wiki.debian.org/CrossToolchains#Installation)
 2.  install build dependencies:  
-    `sudo apt-get install pkg-config debhelper libz-dev:armhf libsqlite3-dev:armhf`
+    `sudo apt-get install pkg-config debhelper libz-dev:armhf libsqlite3-dev:armhf libglib2.0-dev:armhf libgstreamer0.10-dev:armhf libgstreamer-plugins-base0.10-dev:armhf`
 4.  Get the Code:
     `git clone git://git.goldelico.com/qtmoko2-qte.git`
-    `cd qtmoko2-qte; git submodule update --init`
 3.  build deb:  
     `cd qtmoko2-qte; dpkg-buildpackage -a armhf -b`
 
 ## Building natively on armhf:
 1.  install build dependencies:  
-    `sudo apt-get install pkg-config debhelper libz-dev libsqlite3-dev`
+    `sudo apt-get install build-essential pkg-config debhelper libz-dev libsqlite3-dev libglib2.0-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev`
 2.  Get the Code:
     `git clone git://git.goldelico.com/qtmoko2-qte.git`
-    `cd qtmoko2-qte; git submodule update --init`
-3.  build deb:  
-    `cd qtmoko2-qte; dpkg-buildpackage -a armhf -b`
+3.  build deb (remove the -b option to build the source package as well):
+    `cd qtmoko2-qte; dpkg-buildpackage -b`
