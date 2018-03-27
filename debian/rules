@@ -17,6 +17,7 @@ export DEB_LDFLAGS_MAINT_APPEND = -Wl,-rpath-link,$(CURDIR)/build/lib
 # (to allow cross-compiling with debians gcc names)
 genplatformdef_target:
 	./mkqtspec.sh
+
 genplatformdef_target_clean:
 	# rsync src into subdirectory
 	# unfortunately this makes the .tar.xz include both, src/ and source/
@@ -43,8 +44,8 @@ override_dh_auto_configure: genplatformdef_target
 		-opensource \
 		-confirm-license \
 		-embedded \
-		-platform linux-debian-$(DEB_TARGET_ARCH) \
-		-xplatform qws/linux-debian-$(DEB_TARGET_ARCH) \
+		-platform linux-debian-$(DEB_HOST_ARCH) \
+		-xplatform qws/linux-debian-$(DEB_HOST_ARCH) \
 		-force-pkg-config \
 		-prefix /opt/qt-embedded \
 		-no-rpath \
