@@ -1,3 +1,9 @@
+qt-embedded (4.8.7-1) unstable; urgency=low
+
+  * fixed to build natively on Wheezy 7.11 and Jessie 8.10
+
+ -- Nikolaus Schaller <hns@goldelico.com>  Thu, 27 Mar 2018 09:00:00 +0100
+
 qt-embedded (4.8.7) unstable; urgency=low
 
   * Initial Release.
