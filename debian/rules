@@ -53,6 +53,7 @@ override_dh_auto_configure: genplatformdef_target
 		-svg \
 		-system-zlib \
 		-system-sqlite \
+		-no-phonon-backend \
 		-nomake examples \
 		-nomake demos \
 		-nomake docs \
