@@ -360,7 +360,7 @@ bool QAccessibleTable2::selectRow(int row)
     QModelIndex index = view()->model()->index(row, 0, view()->rootIndex());
     if (!index.isValid() || view()->selectionMode() & QAbstractItemView::NoSelection)
         return false;
-    view()->selectionModel()->select(index, QItemSelectionModel::Select);
+    view()->selectionModel()->select(index, QItemSelectionModel::Columns | QItemSelectionModel::Deselect);
     return true;
 }
 
@@ -393,7 +393,7 @@ bool QAccessibleTable2::unselectColumn(int column)
     QModelIndex index = view()->model()->index(0, column, view()->rootIndex());
     if (!index.isValid() || view()->selectionMode() & QAbstractItemView::NoSelection)
         return false;
-    view()->selectionModel()->select(index, QItemSelectionModel::Columns & QItemSelectionModel::Deselect);
+    view()->selectionModel()->select(index, QItemSelectionModel::Columns | QItemSelectionModel::Deselect);
     return true;
 }
 
