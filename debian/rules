@@ -25,9 +25,17 @@ genplatformdef_target_clean:
 	then \
 		mkdir -p source; \
 		echo "rsync . source"; \
-		rsync -a --delete --exclude=mkqtspec.sh --exclude=README.md --exclude build/ --exclude debian/ '--exclude=.git*' --exclude=source/ . source/; \
+		rsync -a --delete \
+			--exclude=mkqtspec.sh \
+			--exclude=README.md \
+			--exclude=build/ \
+			--exclude=debian/ \
+			--exclude='.git*' \
+			--exclude=source/ \
+			--exclude='/mkspecs/linux-debian-*' \
+			--exclude='/mkspecs/qws/linux-debian-*' \
+			. source/; \
 	fi
-	rm -rf source/mkspecs/linux-debian-* source/mkspecs/qws/linux-debian-*
 
 # main packaging script based on dh7 syntax
 %:
