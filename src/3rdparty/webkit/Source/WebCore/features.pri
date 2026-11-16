@@ -167,7 +167,7 @@ symbian|maemo5|maemo6 {
         DEFINES += ENABLE_VIDEO=1
         DEFINES += WTF_USE_QTKIT=1
         DEFINES -= WTF_USE_QTKIT=0
-    } else: linux-*:!contains(DEFINES, USE_QTMULTIMEDIA=1) {
+    } else: linux-*:contains(QT_CONFIG, gstreamer):!contains(DEFINES, USE_QTMULTIMEDIA=1) {
         DEFINES -= ENABLE_VIDEO=0
         DEFINES += ENABLE_VIDEO=1
         DEFINES += WTF_USE_GSTREAMER=1
