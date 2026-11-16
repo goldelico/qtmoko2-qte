@@ -57,7 +57,7 @@ Collator::Collator(const char* locale)
 {
 }
 
-std::auto_ptr<Collator> Collator::userDefault()
+PassOwnPtr<Collator> Collator::userDefault()
 {
 #if OS(DARWIN) && PLATFORM(CF)
     // Mac OS X doesn't set UNIX locale to match user-selected one, so ICU default doesn't work.
@@ -71,11 +71,11 @@ std::auto_ptr<Collator> Collator::userDefault()
     char buf[256];
     if (collationOrder) {
         CFStringGetCString(collationOrder, buf, sizeof(buf), kCFStringEncodingASCII);
-        return std::auto_ptr<Collator>(new Collator(buf));
+        return PassOwnPtr<Collator>(new Collator(buf));
     } else
-        return std::auto_ptr<Collator>(new Collator(""));
+        return PassOwnPtr<Collator>(new Collator(""));
 #else
-    return std::auto_ptr<Collator>(new Collator(0));
+    return PassOwnPtr<Collator>(new Collator(0));
 #endif
 }
 
