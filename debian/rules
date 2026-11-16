@@ -44,7 +44,7 @@ override_dh_auto_configure: genplatformdef_target
 		-opensource \
 		-confirm-license \
 		-embedded \
-		-platform linux-debian-$(DEB_HOST_ARCH) \
+		-platform qws/linux-debian-$(DEB_HOST_ARCH) \
 		-xplatform qws/linux-debian-$(DEB_HOST_ARCH) \
 		-force-pkg-config \
 		-prefix /opt/qt-embedded \
