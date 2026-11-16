@@ -157,7 +157,7 @@ Structure::~Structure()
 {
     if (m_previous) {
         if (m_nameInPrevious)
-            m_previous->table.remove(StructureTransitionTableHash::Key(RefPtr<UString::Rep>(m_nameInPrevious.get()), m_attributesInPrevious), m_specificValueInPrevious);
+            m_previous->table.remove(StructureTransitionTableHash::Key(RefPtr<UString::Rep>(m_nameInPrevious.get()), static_cast<unsigned>(m_attributesInPrevious)), m_specificValueInPrevious);
         else
             m_previous->table.removeAnonymousSlotTransition(m_anonymousSlotsInPrevious);
 
