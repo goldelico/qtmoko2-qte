@@ -71,6 +71,9 @@ override_dh_auto_test:
 	# for some reason, tests dont work because "QWSServerSocket::init: Address already in use"
 	#LD_LIBRARY_PATH=$(CURDIR)/build/lib dh_auto_test
 
+override_dh_auto_install:
+	dh_auto_install --builddirectory=build -- INSTALL_ROOT=$(CURDIR)/debian/tmp
+
 override_dh_shlibdeps:
 	# make sure dpkg-shlibdeps can find the qt libraries when its looking
 	dh_shlibdeps -l/opt/qt-embedded/lib
