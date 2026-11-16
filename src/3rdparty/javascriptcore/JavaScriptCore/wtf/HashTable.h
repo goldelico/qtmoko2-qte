@@ -257,16 +257,17 @@ namespace WTF {
 
     using std::swap;
 
-#if !COMPILER(MSVC) && !OS(QNX) && !defined(_LIBCPP_VERSION)
-    // The Dinkumware C++ library (used by MSVC and QNX) and clang's libc++ have a swap for pairs defined.
-
-    // swap pairs by component, in case of pair members that specialize swap
-    template<typename T, typename U> inline void swap(pair<T, U>& a, pair<T, U>& b)
+    // Work around MSVC's standard library, whose swap for pairs does not swap by component.
+    template<typename T> inline void hashTableSwap(T& a, T& b)
+    {
+        swap(a, b);
+    }
+    // Swap pairs by component, in case of pair members that specialize swap.
+    template<typename T, typename U> inline void hashTableSwap(pair<T, U>& a, pair<T, U>& b)
     {
         swap(a.first, b.first);
         swap(a.second, b.second);
     }
-#endif
 
     template<typename T, bool useSwap> struct Mover;
     template<typename T> struct Mover<T, true> { static void move(T& from, T& to) { swap(from, to); } };
