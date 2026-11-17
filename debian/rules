@@ -37,8 +37,9 @@ genplatformdef_target_clean:
 			. source/; \
 	fi
 
-# main packaging script based on dh7 syntax
-%:
+.PHONY: build clean binary binary-arch binary-indep
+
+build clean binary binary-arch binary-indep:
 	dh $@ --sourcedirectory=source --builddirectory=build --parallel
 
 override_dh_auto_clean: genplatformdef_target_clean
@@ -47,25 +48,50 @@ override_dh_auto_clean: genplatformdef_target_clean
 
 override_dh_auto_configure: genplatformdef_target
 	mkdir -p build
-	cd build; env \
-		../source/configure \
-		-opensource \
-		-confirm-license \
-		-embedded \
-		-platform qws/linux-debian-$(DEB_HOST_ARCH) \
-		-xplatform qws/linux-debian-$(DEB_HOST_ARCH) \
-		-force-pkg-config \
-		-prefix /opt/qt-embedded \
-		-no-rpath \
-		-plugin-sql-sqlite \
-		-svg \
-		-system-zlib \
-		-system-sqlite \
-		-no-phonon-backend \
-		-nomake examples \
-		-nomake demos \
-		-nomake docs \
-		-nomake tests
+	{ \
+		echo "-opensource"; \
+		echo "-confirm-license"; \
+		echo "-embedded"; \
+		echo "-platform qws/linux-debian-$(DEB_HOST_ARCH)"; \
+		echo "-xplatform qws/linux-debian-$(DEB_HOST_ARCH)"; \
+		echo "-force-pkg-config"; \
+		echo "-prefix /opt/qt-embedded"; \
+		echo "-no-rpath"; \
+		echo "-plugin-sql-sqlite"; \
+		echo "-svg"; \
+		echo "-system-zlib"; \
+		echo "-system-sqlite"; \
+		echo "-no-phonon-backend"; \
+		echo "-nomake examples"; \
+		echo "-nomake demos"; \
+		echo "-nomake docs"; \
+		echo "-nomake tests"; \
+	} > build/.qtmoko-configure-options.new
+	@if ! cmp -s build/.qtmoko-configure-options.new build/.qtmoko-configure-options; then \
+		mv build/.qtmoko-configure-options.new build/.qtmoko-configure-options; \
+		rm -f build/.qtmoko-configured; \
+	else \
+		rm -f build/.qtmoko-configure-options.new; \
+	fi
+	@if [ ! -f build/.qtmoko-configured ] || [ ! -f build/Makefile ]; then \
+		cd build && ../source/configure \
+			-opensource -confirm-license -embedded \
+			-platform qws/linux-debian-$(DEB_HOST_ARCH) \
+			-xplatform qws/linux-debian-$(DEB_HOST_ARCH) \
+			-force-pkg-config \
+			-prefix /opt/qt-embedded \
+			-no-rpath \
+			-plugin-sql-sqlite \
+			-svg \
+			-system-zlib \
+			-system-sqlite \
+			-no-phonon-backend \
+			-nomake examples -nomake demos \
+			-nomake docs -nomake tests \
+		&& touch .qtmoko-configured; \
+	else \
+		echo "+++ Qt already configured; skipping configure"; \
+	fi
 
 override_dh_auto_test:
 	# for some reason, tests dont work because "QWSServerSocket::init: Address already in use"
