@@ -73,6 +73,7 @@ override_dh_auto_test:
 
 override_dh_auto_install:
 	dh_auto_install --builddirectory=build -- INSTALL_ROOT=$(CURDIR)/debian/tmp
+	find debian/tmp/opt/qt-embedded/lib -name '*.la' -delete
 
 override_dh_shlibdeps:
 	# make sure dpkg-shlibdeps can find the qt libraries when its looking

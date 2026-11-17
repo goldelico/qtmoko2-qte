@@ -1,0 +1,9 @@
+opt/qt-embedded/bin/*
+opt/qt-embedded/include/*
+opt/qt-embedded/mkspecs/*
+opt/qt-embedded/lib/*.so
+opt/qt-embedded/lib/*.prl
+opt/qt-embedded/lib/*.a
+opt/qt-embedded/lib/pkgconfig/*
+opt/qt-embedded/phrasebooks/*
+opt/qt-embedded/q3porting.xml

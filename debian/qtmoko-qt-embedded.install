@@ -1,1 +1,5 @@
-opt/qt-embedded/*
+opt/qt-embedded/lib/*.so.*
+opt/qt-embedded/lib/fonts/*
+opt/qt-embedded/plugins/*
+opt/qt-embedded/imports/*
+opt/qt-embedded/translations/*

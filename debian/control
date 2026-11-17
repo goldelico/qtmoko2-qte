@@ -1,6 +1,6 @@
 Source: qtmoko-qt-embedded
 Priority: optional
-Maintainer: unknown <privacy@not.given>
+Maintainer: H. Nikolaus Schaller <hns@goldelico.com>
 Build-Depends:
  debhelper (>= 9),
  rsync,
@@ -16,13 +16,18 @@ Homepage: http://projects.goldelico.com/p/qtmoko2-qte/
 #Vcs-Git: git://anonscm.debian.org/collab-maint/qt-embedded.git
 #Vcs-Browser: http://anonscm.debian.org/?p=collab-maint/qt-embedded.git;a=summary
 
+Package: qtmoko-qt-embedded
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Qt 4 Embedded runtime for QtMoko
+ Qt 4.8.7 libraries, plugins and runtime resources for QtMoko.
+ This build uses Qt for Embedded Linux (QWS) and does not require
+ an X11 server.
+
 Package: qtmoko-qt-embedded-dev
 Section: libdevel
 Architecture: any
 Depends: qtmoko-qt-embedded (= ${binary:Version}), ${misc:Depends}
-Description: This is the developer version of QTE for Letux QtMoko
-
-Package: qtmoko-qt-embedded
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: This is QTE for Letux QtMoko
+Description: Development files for QtMoko's Qt 4 Embedded
+ Headers, qmake, development tools, mkspecs and linker files
+ for building applications against QtMoko's Qt 4 Embedded.
