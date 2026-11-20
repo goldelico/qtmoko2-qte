@@ -3,3 +3,4 @@ opt/qt-embedded/lib/fonts/*
 opt/qt-embedded/plugins/*
 opt/qt-embedded/imports/*
 opt/qt-embedded/translations/*
+debian/qtmoko-qt-embedded.conf etc/ld.so.conf.d/
