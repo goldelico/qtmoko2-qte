@@ -207,10 +207,15 @@ int q_ASN1_STRING_length(ASN1_STRING *a);
 int q_ASN1_STRING_to_UTF8(unsigned char **a, ASN1_STRING *b);
 long q_BIO_ctrl(BIO *a, int b, long c, void *d);
 int q_BIO_free(BIO *a);
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+BIO *q_BIO_new(const BIO_METHOD *a);
+const BIO_METHOD *q_BIO_s_mem();
+#else
 BIO *q_BIO_new(BIO_METHOD *a);
+BIO_METHOD *q_BIO_s_mem();
+#endif
 BIO *q_BIO_new_mem_buf(void *a, int b);
 int q_BIO_read(BIO *a, void *b, int c);
-BIO_METHOD *q_BIO_s_mem();
 int q_BIO_write(BIO *a, const void *b, int c);
 int q_BN_num_bits(const BIGNUM *a);
 int q_CRYPTO_num_locks();
@@ -399,7 +404,11 @@ DSA *q_d2i_DSAPrivateKey(DSA **a, unsigned char **pp, long length);
 		PEM_ASN1_write_bio((int (*)(void*, unsigned char**))q_i2d_DSAPrivateKey,PEM_STRING_DSA,\
 			bp,(char *)x,enc,kstr,klen,cb,u)
 #endif
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#define q_SSL_CTX_set_options(ctx,op) SSL_CTX_set_options((ctx),(op))
+#else
 #define q_SSL_CTX_set_options(ctx,op) q_SSL_CTX_ctrl((ctx),SSL_CTRL_OPTIONS,(op),NULL)
+#endif
 #define q_SKM_sk_num(type, st) ((int (*)(const STACK_OF(type) *))q_sk_num)(st)
 #define q_SKM_sk_value(type, st,i) ((type * (*)(const STACK_OF(type) *, int))q_sk_value)(st, i)
 #define q_sk_GENERAL_NAME_num(st) q_SKM_sk_num(GENERAL_NAME, (st))

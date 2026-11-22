@@ -321,8 +321,17 @@ int QSslKey::length() const
 {
     if (d->isNull)
         return -1;
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    const BIGNUM *value = 0;
+    if (d->algorithm == QSsl::Rsa)
+        RSA_get0_key(d->rsa, &value, 0, 0);
+    else
+        DSA_get0_pqg(d->dsa, &value, 0, 0);
+    return value ? q_BN_num_bits(value) : -1;
+#else
     return (d->algorithm == QSsl::Rsa)
            ? q_BN_num_bits(d->rsa->n) : q_BN_num_bits(d->dsa->p);
+#endif
 }
 
 /*!

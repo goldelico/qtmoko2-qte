@@ -118,15 +118,21 @@ public:
           locksLocker(QMutex::Recursive)
     {
         QMutexLocker locker(&locksLocker);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
         int numLocks = q_CRYPTO_num_locks();
         locks = new QMutex *[numLocks];
         memset(locks, 0, numLocks * sizeof(QMutex *));
+#else
+        locks = 0;
+#endif
     }
     inline ~QOpenSslLocks()
     {
         QMutexLocker locker(&locksLocker);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
         for (int i = 0; i < q_CRYPTO_num_locks(); ++i)
             delete locks[i];
+#endif
         delete [] locks;
 
         QSslSocketPrivate::deinitialize();
@@ -222,8 +228,12 @@ QSslCipher QSslSocketBackendPrivate::QSslCipher_from_SSL_CIPHER(SSL_CIPHER *ciph
             ciph.d->encryptionMethod = descriptionList.at(4).mid(4);
         ciph.d->exportable = (descriptionList.size() > 6 && descriptionList.at(6) == QLatin1String("export"));
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+        ciph.d->bits = SSL_CIPHER_get_bits(cipher, &ciph.d->supportedBits);
+#else
         ciph.d->bits = cipher->strength_bits;
         ciph.d->supportedBits = cipher->alg_bits;
+#endif
 
     }
     return ciph;
@@ -260,14 +270,18 @@ bool QSslSocketBackendPrivate::initSslContext()
 init_context:
     switch (configuration.protocol) {
     case QSsl::SslV2:
-#ifndef OPENSSL_NO_SSL2
+#if OPENSSL_VERSION_NUMBER < 0x10100000L && !defined(OPENSSL_NO_SSL2)
         ctx = q_SSL_CTX_new(client ? q_SSLv2_client_method() : q_SSLv2_server_method());
 #else
         ctx = 0; // SSL 2 not supported by the system, but chosen deliberately -> error
 #endif
         break;
     case QSsl::SslV3:
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+        ctx = 0; // SSLv3 was removed from OpenSSL 1.1.
+#else
         ctx = q_SSL_CTX_new(client ? q_SSLv3_client_method() : q_SSLv3_server_method());
+#endif
         break;
     case QSsl::SecureProtocols: // SslV2 will be disabled below
     case QSsl::TlsV1SslV3: // SslV2 will be disabled below
@@ -363,7 +377,11 @@ init_context:
         //
         // See also: QSslContext::fromConfiguration()
         if (caCertificate.expiryDate() >= QDateTime::currentDateTime()) {
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+            q_X509_STORE_add_cert(SSL_CTX_get_cert_store(ctx), (X509 *)caCertificate.handle());
+#else
             q_X509_STORE_add_cert(ctx->cert_store, (X509 *)caCertificate.handle());
+#endif
         }
     }
 
@@ -500,8 +518,10 @@ void QSslSocketBackendPrivate::destroySslContext()
 */
 void QSslSocketPrivate::deinitialize()
 {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     q_CRYPTO_set_id_callback(0);
     q_CRYPTO_set_locking_callback(0);
+#endif
 }
 
 /*!
@@ -527,8 +547,10 @@ bool QSslSocketPrivate::ensureLibraryLoaded()
         s_libraryLoaded = true;
 
         // Initialize OpenSSL.
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
         q_CRYPTO_set_id_callback(id_function);
         q_CRYPTO_set_locking_callback(locking_function);
+#endif
         if (q_SSL_library_init() != 1)
             return false;
         q_SSL_load_error_strings();
@@ -659,13 +681,17 @@ void QSslSocketPrivate::resetDefaultCiphers()
     STACK_OF(SSL_CIPHER) *supportedCiphers = q_SSL_get_ciphers(mySsl);
     for (int i = 0; i < q_sk_SSL_CIPHER_num(supportedCiphers); ++i) {
         if (SSL_CIPHER *cipher = q_sk_SSL_CIPHER_value(supportedCiphers, i)) {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
             if (cipher->valid) {
+#endif
                 QSslCipher ciph = QSslSocketBackendPrivate::QSslCipher_from_SSL_CIPHER(cipher);
                 if (!ciph.isNull()) {
                     if (!ciph.name().toLower().startsWith(QLatin1String("adh")))
                         ciphers << ciph;
                 }
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
             }
+#endif
         }
     }
 
