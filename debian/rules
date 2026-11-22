@@ -54,6 +54,8 @@ override_dh_auto_configure: genplatformdef_target
 		echo "-embedded"; \
 		echo "-platform qws/linux-debian-$(DEB_HOST_ARCH)"; \
 		echo "-xplatform qws/linux-debian-$(DEB_HOST_ARCH)"; \
+		echo "-dbus"; \
+		echo "-openssl-linked"; \
 		echo "-force-pkg-config"; \
 		echo "-prefix /opt/qt-embedded"; \
 		echo "-no-rpath"; \
@@ -62,14 +64,18 @@ override_dh_auto_configure: genplatformdef_target
 		echo "-system-zlib"; \
 		echo "-system-sqlite"; \
 		echo "-no-phonon-backend"; \
+		echo "-D QT_KEYPAD_NAVIGATION -no-pch"; \
 		echo "-nomake examples"; \
 		echo "-nomake demos"; \
 		echo "-nomake docs"; \
 		echo "-nomake tests"; \
 	} > build/.qtmoko-configure-options.new
 	@if ! cmp -s build/.qtmoko-configure-options.new build/.qtmoko-configure-options; then \
-		mv build/.qtmoko-configure-options.new build/.qtmoko-configure-options; \
-		rm -f build/.qtmoko-configured; \
+		echo "+++ Qt configure options changed: resetting build directory"; \
+		mv build/.qtmoko-configure-options.new .qtmoko-configure-options.tmp && \
+		rm -rf build && \
+		mkdir -p build && \
+		mv .qtmoko-configure-options.tmp build/.qtmoko-configure-options; \
 	else \
 		rm -f build/.qtmoko-configure-options.new; \
 	fi
@@ -78,6 +84,8 @@ override_dh_auto_configure: genplatformdef_target
 			-opensource -confirm-license -embedded \
 			-platform qws/linux-debian-$(DEB_HOST_ARCH) \
 			-xplatform qws/linux-debian-$(DEB_HOST_ARCH) \
+			-dbus \
+			-openssl-linked \
 			-force-pkg-config \
 			-prefix /opt/qt-embedded \
 			-no-rpath \
@@ -86,12 +94,16 @@ override_dh_auto_configure: genplatformdef_target
 			-system-zlib \
 			-system-sqlite \
 			-no-phonon-backend \
+			-D QT_KEYPAD_NAVIGATION -no-pch \
 			-nomake examples -nomake demos \
 			-nomake docs -nomake tests \
 		&& touch .qtmoko-configured; \
 	else \
 		echo "+++ Qt already configured; skipping configure"; \
 	fi
+
+override_dh_auto_build: override_dh_auto_configure
+	dh_auto_build --builddirectory=build
 
 override_dh_auto_test:
 	# for some reason, tests dont work because "QWSServerSocket::init: Address already in use"

@@ -5,6 +5,8 @@ Build-Depends:
  debhelper (>= 9),
  rsync,
  pkg-config,
+ libssl-dev,
+ libdbus-1-dev,
  zlib1g-dev,
  libsqlite3-dev,
  libglib2.0-dev,

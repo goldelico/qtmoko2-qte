@@ -1,3 +1,9 @@
+qtmoko-qt-embedded (4.8.7-2) unstable; urgency=low
+
+  * Development towards the next release.
+
+ -- Nikolaus Schaller <hns@goldelico.com>  Sun, 22 Nov 2026 09:09:00 +0100
+
 qtmoko-qt-embedded (4.8.7-1) unstable; urgency=low
 
   * resurrected build
